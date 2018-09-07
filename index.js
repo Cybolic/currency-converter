@@ -110,6 +110,9 @@ module.exports = class CurrencyConverter {
             file.close((err) => {
               if (err) { /* ignore error */ }
               fs.unlink(this.feedFilepathZipped, (err) => {
+                if (err) {
+                  return callback(err);
+                }
                 attempt_num = attempt_num || 0;
                 if (attempt_num < 1) {
                   return this._updateFile(callback, attempt_num + 1);
