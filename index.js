@@ -32,14 +32,14 @@ module.exports = class CurrencyConverter {
       this._convert(task.currencyValue, task.conversionDate, task.fromCurrency, task.toCurrency, callback);
     }, 1);
     
-    console.log('CurrencyConveter - StorageDir: ' + this.storageDir);
+    console.log('CurrencyConverter - StorageDir: ' + this.storageDir);
   }
 
   convert(currencyValue, conversionDate, fromCurrency, toCurrency, callback) {
     
     var parsedValue = parseFloat(currencyValue);
     if (parsedValue != currencyValue) {
-      return callback('CurrencyConveter - value is not a number: ' + currencyValue);
+      return callback('CurrencyConverter - value is not a number: ' + currencyValue);
     }
 
     if (fromCurrency === toCurrency) {
@@ -47,7 +47,7 @@ module.exports = class CurrencyConverter {
     }
 
     if (this.processingQueue.length() > 10){
-      console.log(`CurrencyConveter - QueueSize: ${this.processingQueue.length()}`);
+      console.log(`CurrencyConverter - QueueSize: ${this.processingQueue.length()}`);
     }
     
     this.processingQueue.push({
@@ -93,7 +93,7 @@ module.exports = class CurrencyConverter {
   }
 
   _updateFile(callback, attempt_num) {
-    console.log(`CurrencyConveter - is updating...`);
+    console.log(`CurrencyConverter - is updating...`);
     var file = fs.createWriteStream(this.feedFilepathZipped);
     var request = http.get('http://www.ecb.europa.eu/stats/eurofxref/eurofxref-hist.zip', (response) => {
       response.pipe(file);
@@ -114,7 +114,7 @@ module.exports = class CurrencyConverter {
                 if (attempt_num < 1) {
                   return this._updateFile(callback, attempt_num + 1);
                 } else {
-                  console.warn(`CurrencyConveter - failed to read update data`);
+                  console.warn(`CurrencyConverter - failed to read update data`);
                   return callback(error);
                 }
               })
@@ -158,7 +158,7 @@ module.exports = class CurrencyConverter {
           this.dataByDate[currencyObj.date] = currencyObj;
         }
       }
-      console.log(`CurrencyConveter - has updated the data. Records: ${this.data.length}`);
+      console.log(`CurrencyConverter - has updated the data. Records: ${this.data.length}`);
       callback();
     });
   }
