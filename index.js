@@ -92,7 +92,7 @@ module.exports = class CurrencyConverter {
     });
   }
 
-  _readFile(callback) {
+  _readFile(callback, attempt_num) {
     fs.readFile(this.feedFilepath, 'utf8', (err, data) => {
       if (err && err.code === 'ENOENT') {
         // file does not exist -> download
@@ -100,7 +100,12 @@ module.exports = class CurrencyConverter {
           if (err) {
             callback(err);
           } else {
-            this._readFile(callback);
+            attempt_num = attempt_num || 0;
+            if (attempt_num < 1) {
+              this._readFile(callback);
+            } else {
+              callback(new Error('Couldn\'t read csv file'));
+            }
           }
         });
       } else {
