@@ -92,6 +92,23 @@ module.exports = class CurrencyConverter {
     });
   }
 
+  _readFile(callback) {
+    fs.readFile(this.feedFilepath, 'utf8', (err, data) => {
+      if (err && err.code === 'ENOENT') {
+        // file does not exist -> download
+        this._updateFile((err) => {
+          if (err) {
+            callback(err);
+          } else {
+            this._readFile(callback);
+          }
+        });
+      } else {
+        callback(err, data);
+      }
+    });
+  }
+
   _updateFile(callback, attempt_num) {
     console.log(`CurrencyConveter - is updating...`);
     var file = fs.createWriteStream(this.feedFilepathZipped);
@@ -134,7 +151,7 @@ module.exports = class CurrencyConverter {
   _updateDataInMemory(callback) {
     this.dataByDate = {};
     this.data = [];
-    fs.readFile(this.feedFilepath, 'utf8', (err, data) => {
+    this._readFile((err, data) => {
       if (err) {
         return callback(err);
       }
